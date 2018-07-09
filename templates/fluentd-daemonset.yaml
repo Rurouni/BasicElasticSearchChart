@@ -1,0 +1,64 @@
+{{if .Values.CollectClusterLogs}}
+kind: Service
+apiVersion: v1
+metadata:
+  name: elasticsearch-logging
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: fluentd
+    app: "{{.Release.Name}}-elasticsearch"
+spec:
+  ports:
+  - port: 9200
+  selector:
+    component: elasticsearch
+    app: "{{.Release.Name}}-elasticsearch"
+---
+kind: DaemonSet
+apiVersion: extensions/v1beta1
+metadata:
+  name:  "{{.Release.Name}}-fluentd"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: fluentd
+    app: "{{.Release.Name}}-elasticsearch"
+  annotations:
+    helm.sh/created: {{.Release.Time.Seconds | quote }}
+spec:
+  template:
+    metadata:
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        component: fluentd
+        app: "{{.Release.Name}}-elasticsearch"
+    spec:
+      containers:
+      - name: fluentd-es
+        image: "{{.Values.FluentdImage}}:{{.Values.FluentdImageTag}}"
+        env:
+         - name: FLUENTD_ARGS
+           value: -qq
+        volumeMounts:
+         - name: varlibdockercontainers
+           mountPath: /mnt/sda1/var/lib/docker/containers
+         - name: varlibboot2docker
+           mountPath: /var/lib/boot2docker
+         - name: varlog
+           mountPath: /var/log
+      volumes:
+         - hostPath:
+             path: /mnt/sda1/var/lib/boot2docker
+           name: varlibboot2docker
+         - hostPath:
+             path: /mnt/sda1/var/lib/docker/containers
+           name: varlibdockercontainers
+         - hostPath:
+             path: /var/log
+           name: varlog
+{{end}}

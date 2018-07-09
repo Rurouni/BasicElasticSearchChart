@@ -1,0 +1,23 @@
+kind: Service
+apiVersion: v1
+metadata:
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+  name: "{{.Release.Name}}-elasticsearch"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: elasticsearch
+    app: "{{.Release.Name}}-elasticsearch"
+  annotations:
+    helm.sh/created: {{.Release.Time.Seconds | quote }}
+spec:
+  ports:
+  - port: 9300
+    name: transport
+  - port: 9200
+    name: http
+  selector:
+    app: "{{.Release.Name}}-elasticsearch"
+    component: server

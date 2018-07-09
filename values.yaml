@@ -1,0 +1,17 @@
+# Default values for elasticsearch.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+ElasticSearchImage: "docker.elastic.co/elasticsearch/elasticsearch"
+ElasticSearchImageTag: "6.2.2"
+FluentdImage: "gcr.io/google_containers/fluentd-elasticsearch"
+FluentdImageTag: "1.23"
+KibanaImage: "docker.elastic.co/kibana/kibana"
+KibanaImageTag: "6.2.2"
+ESHeapSize: "1g"
+ESDataStorageSize: "100Gi"
+ESDataStorageClass: ""
+CollectClusterLogs: true
+CuratorImage: "quay.io/pires/docker-elasticsearch-curator"
+CuratorTag: "5.4.1"

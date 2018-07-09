@@ -1,0 +1,3 @@
+name: ElasticMonitoring
+version: 6.1.2
+description: All in one chart for single Elasticsearch node + kibana + optional fluentd daemonset that puts cluster logs into ES
